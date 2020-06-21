@@ -1,8 +1,9 @@
-import React , {useState , useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {Form , Input , Button} from 'antd'
 import useInput from "../hooks/useInput";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import styled from 'styled-components';
+import {ADD_COMMENT_REQUEST} from "../reducers/post";
 
 const FormBox = styled(Form)`
   position: relative;
@@ -17,12 +18,27 @@ const SubmitButton = styled(Button)`
 `
 
 const CommentForm = ({post}) => {
-    const {me} = useSelector((state) => state.user);
+    const dispatch = useDispatch()
+
+    const { me } = useSelector((state) => state.user);
+    const { addCommentDone } = useSelector((state) => state.post);
+
     const id = me && me.id;
-    const [commentText , onChangeCommentText] = useInput();
+    const [commentText , onChangeCommentText, setCommentText] = useInput();
+
+    useEffect(() => {
+        if (addCommentDone) {
+            setCommentText('')
+        }
+    }, [addCommentDone])
+
     const onSubmitComment = useCallback(() => {
         console.log(post.id , commentText)
-    }, [commentText])
+        dispatch({
+            type:ADD_COMMENT_REQUEST,
+            data: { content: commentText, userId: id, postId: post.id },
+        })
+    }, [commentText , id])
     return(
         <>
             <FormBox onFinish={onSubmitComment}>
