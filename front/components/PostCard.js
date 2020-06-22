@@ -1,14 +1,24 @@
 import React, {useState, useCallback} from 'react';
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {Card, Popover, Button, Avatar, List, Comment} from 'antd'
 import {EllipsisOutlined, HeartOutlined, HeartTwoTone, MessageOutlined, RetweetOutlined} from "@ant-design/icons";
+import styled from 'styled-components';
 import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
+import {REMOVE_POST_REQUEST} from "../reducers/post";
+
+const CardWrapper = styled.div`
+  margin-bottom: 20px;
+`;
 
 
 const PostCard = ({post}) => {
-    const {me} = useSelector((state) => state.user);
+    const dispatch = useDispatch()
+
+    const { me } = useSelector((state) => state.user);
+    const { removePostLoading } = useSelector((state) => state.post)
+
     const id = me && me.id;
     const [liked, setLiked] = useState(false);
     const [commentFormOpened, setCommentFormOpened] = useState(false);
@@ -19,10 +29,17 @@ const PostCard = ({post}) => {
         setCommentFormOpened((prev) => !prev)
     }, [])
 
+    const onRemovePost = useCallback(() => {
+        dispatch({
+            type:REMOVE_POST_REQUEST,
+            data:post.id
+        })
+    }, [])
+
 
     return (
         <>
-            <div style={{marginBottom: '20px'}}>
+            <CardWrapper >
                 <Card
                     cover={post.Images[0] && <PostImages images={post.Images}/>}
                     actions={[
@@ -36,7 +53,7 @@ const PostCard = ({post}) => {
                                 {id && post.User.id === id ? (
                                     <>
                                         <Button>수정</Button>
-                                        <Button type="danger">삭제</Button>
+                                        <Button type="danger" loading={removePostLoading} onClick={onRemovePost}>삭제</Button>
                                     </>
                                 ) : (
                                     <Button>신고</Button>
@@ -76,7 +93,7 @@ const PostCard = ({post}) => {
                         </div>
                     </>
                 )}
-            </div>
+            </CardWrapper>
         </>
     )
 };
