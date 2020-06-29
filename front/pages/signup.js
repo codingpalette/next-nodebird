@@ -1,11 +1,13 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import Head from "next/head";
+import Router from "next/router";
+import { SIGN_UP_REQUEST } from "../reducers/user";
+import { useDispatch, useSelector } from "react-redux";
 import {Form, Input, Checkbox, Button} from 'antd';
 import styled from 'styled-components'
 import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
-import {SIGN_UP_REQUEST} from "../reducers/user";
-import {useDispatch, useSelector} from "react-redux";
+
 
 
 const ErrorMessage = styled.div`
@@ -14,8 +16,26 @@ const ErrorMessage = styled.div`
 
 const Signup = () => {
     const dispatch = useDispatch();
+    const { signUpLoading, signUpDone, signUpError, me } = useSelector((state) => state.user);
 
-    const { signUpLoading } = useSelector((state) => state.user)
+    useEffect(() => {
+        if ((me && me.id)) {
+            Router.replace('/')
+        }
+    }, [me && me.id]);
+
+    useEffect(() => {
+       if (signUpDone) {
+           Router.replace('/')
+       }
+    }, [signUpDone]);
+
+    useEffect(() => {
+        if (signUpError) {
+            alert(signUpError)
+        }
+    }, [signUpError])
+
 
     const [email, onChangeEmail] = useInput('');
     const [nickname, onChangeNickname] = useInput('');
@@ -46,7 +66,7 @@ const Signup = () => {
             type : SIGN_UP_REQUEST,
             data : { email, password, nickname}
         })
-        console.log(email , nickname , password)
+        // console.log(email , nickname , password)
     }, [email, password , passwordCheck , term ])
 
     return (
