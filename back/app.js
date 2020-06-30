@@ -23,7 +23,7 @@ passportConfig();
 
 app.use(cors({
     origin: true, // 나중에는 실제 프론트 주소를 넣어야함
-    credentials: false,
+    credentials: true, // 서로 다른 도메인간 쿠기 보내기 허용
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

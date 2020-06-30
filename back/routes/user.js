@@ -5,8 +5,8 @@ const { User, Post } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
 const router = express.Router();
 
-router.post('/login', (req, res, next) => {
-    passport.authenticate('local', isNotLoggedIn, (err, user, info) => {
+router.post('/login', isNotLoggedIn, (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
         if (err) {
             console.error(err);
             return next(err);
