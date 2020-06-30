@@ -1,6 +1,6 @@
-import shortId from 'shortid';
+// import shortId from 'shortid';
 import produce from 'immer';
-import faker from 'faker';
+// import faker from 'faker';
 
 
 
@@ -22,24 +22,24 @@ export const initialState = {
     hasMorePosts: true,
 };
 
-export const generateDummyPost = (number) => Array(number).fill().map(() => ({
-    id: shortId.generate(),
-    User: {
-        id: shortId.generate(),
-        nickname: faker.name.findName(),
-    },
-    content: faker.lorem.paragraph(),
-    Images: [{
-        src: faker.image.image(),
-    }],
-    Comments: [{
-        User: {
-            id: shortId.generate(),
-            nickname: faker.name.findName(),
-        },
-        content: faker.lorem.sentence(),
-    }],
-}));
+// export const generateDummyPost = (number) => Array(number).fill().map(() => ({
+//     id: shortId.generate(),
+//     User: {
+//         id: shortId.generate(),
+//         nickname: faker.name.findName(),
+//     },
+//     content: faker.lorem.paragraph(),
+//     Images: [{
+//         src: faker.image.image(),
+//     }],
+//     Comments: [{
+//         User: {
+//             id: shortId.generate(),
+//             nickname: faker.name.findName(),
+//         },
+//         content: faker.lorem.sentence(),
+//     }],
+// }));
 
 // initialState.mainPosts = initialState.mainPosts.concat(generateDummyPost(10));
 
@@ -112,7 +112,7 @@ const reducer = (state = initialState, action ) => {
                 break;
             case ADD_COMMENT_SUCCESS:
                 const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
-                post.Comments.unshift(action.data.content);
+                post.Comments.unshift(action.data);
                 draft.addCommentLoading = false;
                 draft.addCommentDone = true;
                 break;

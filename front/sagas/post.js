@@ -1,5 +1,5 @@
 import { all, fork, call, put, take, takeEvery, takeLatest, delay, throttle } from 'redux-saga/effects';
-import shortId from 'shortid';
+// import shortId from 'shortid';
 import axios from 'axios';
 import {
     generateDummyPost,
@@ -21,17 +21,18 @@ import {ADD_POST_TO_ME, REMOVE_POST_OF_ME} from "../reducers/user";
 
 
 function loadPostsAPI(data) {
-    return axios.get('/api/posts' , data)
+    return axios.get('/posts' , data)
 }
 
 function* loadPosts(action) {
     try {
-        // const res = yield call(loadPostsAPI , action.data)
-        yield  delay(1000);
+        const res = yield call(loadPostsAPI , action.data)
+        // yield  delay(1000);
 
         yield put({
             type: LOAD_POSTS_SUCCESS,
-            data: generateDummyPost(10)
+            // data: generateDummyPost(10)
+            data: res.data
         })
     } catch (e) {
         console.log(e);
