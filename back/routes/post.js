@@ -66,7 +66,7 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => { // POST 
     }
 })
 
-router.patch('/:postId/like', async (req, res, next) => { // 좋아요 추가
+router.patch('/:postId/like', isLoggedIn, async (req, res, next) => { // 좋아요 추가
     try {
         const post = await Post.findOne({
             where: { id: req.params.postId }
@@ -82,7 +82,7 @@ router.patch('/:postId/like', async (req, res, next) => { // 좋아요 추가
     }
 })
 
-router.delete('/:postId/like', async (req, res, next) => { // 좋아요 감소
+router.delete('/:postId/like', isLoggedIn, async (req, res, next) => { // 좋아요 감소
     try {
         const post = await Post.findOne({
             where: { id: req.params.postId }
@@ -98,8 +98,19 @@ router.delete('/:postId/like', async (req, res, next) => { // 좋아요 감소
     }
 })
 
-router.delete('/', (req, res) => {
-    res.json({id:1})
-})
+router.delete('/:postId', isLoggedIn, async (req, res, next) => { // DELETE /post/1
+    try {
+        await Post.destroy({
+            where: {
+                id: req.params.postId,
+                UserId: req.user.id
+            }
+        });
+        res.status(200).json({ PostId: parseInt(req.params.postId , 10) })
+    } catch (e) {
+        console.error(e);
+        next(e)
+    }
+});
 
 module.exports = router;

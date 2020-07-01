@@ -122,16 +122,16 @@ function* addPost(action) {
 
 
 function removePostAPI(data) {
-    return axios.post('/api/post' , data)
+    return axios.delete(`/post/${data}`)
 }
 
 function* removePost(action) {
     try {
-        // const res = yield call(addCommentAPI , action.data)
-        yield  delay(1000)
+        const res = yield call(removePostAPI , action.data)
+        // yield  delay(1000)
         yield put({
             type: REMOVE_POST_SUCCESS,
-            data:action.data
+            data:res.data
 
         });
         yield put({
