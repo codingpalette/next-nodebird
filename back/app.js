@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const path = require('path');
 
 
 const postRouter = require('./routes/post');
@@ -28,6 +29,8 @@ app.use(cors({
     origin: true, // 나중에는 실제 프론트 주소를 넣어야함
     credentials: true, // 서로 다른 도메인간 쿠기 보내기 허용
 }));
+
+app.use('/', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
