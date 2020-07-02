@@ -25,6 +25,10 @@ const PostForm = () => {
         imageInput.current.click();
     }, [imageInput.current])
 
+    const onChangeImages = useCallback(() => {
+
+    }, [])
+
     return(
         <>
             <Form style={{margin:'10px 0 20px'}} encType="multipart/form=data" onFinish={onSubmit}>
@@ -35,7 +39,7 @@ const PostForm = () => {
                     placeholder="어떤 일이 있었나요?"
                 />
                 <div>
-                    <input type="file" multiple hidden ref={imageInput} />
+                    <input type="file" name="image" multiple hidden ref={imageInput} onChange={onChangeImages} />
                     <Button onClick={onClickImageUpload}>이미지 업로드</Button>
                     <Button type="primary" style={{float:'right'}} htmlType="submit">업로드</Button>
                 </div>
