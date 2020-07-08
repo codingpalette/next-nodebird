@@ -1,4 +1,4 @@
-import { all, fork, call, put, take, takeEvery, takeLatest, delay, throttle } from 'redux-saga/effects';
+import {all, fork, call, put, take, takeEvery, takeLatest, delay, throttle} from 'redux-saga/effects';
 // import shortId from 'shortid';
 import axios from 'axios';
 import {
@@ -10,11 +10,11 @@ import {
     ADD_POST_SUCCESS,
     LIKE_POST_FAILURE,
     LIKE_POST_REQUEST,
-    LIKE_POST_SUCCESS,
+    LIKE_POST_SUCCESS, LOAD_HASHTAG_POSTS_FAILURE, LOAD_HASHTAG_POSTS_REQUEST, LOAD_HASHTAG_POSTS_SUCCESS,
     LOAD_POST_FAILURE, LOAD_POST_REQUEST, LOAD_POST_SUCCESS,
     LOAD_POSTS_FAILURE,
     LOAD_POSTS_REQUEST,
-    LOAD_POSTS_SUCCESS,
+    LOAD_POSTS_SUCCESS, LOAD_USER_POSTS_FAILURE, LOAD_USER_POSTS_REQUEST, LOAD_USER_POSTS_SUCCESS,
     REMOVE_POST_FAILURE,
     REMOVE_POST_REQUEST,
     REMOVE_POST_SUCCESS,
@@ -33,7 +33,7 @@ function likePostAPI(data) {
 
 function* likePost(action) {
     try {
-        const res = yield call(likePostAPI , action.data)
+        const res = yield call(likePostAPI, action.data)
         yield put({
             type: LIKE_POST_SUCCESS,
             data: res.data
@@ -54,7 +54,7 @@ function unlikePostAPI(data) {
 
 function* unlikePost(action) {
     try {
-        const res = yield call(unlikePostAPI , action.data)
+        const res = yield call(unlikePostAPI, action.data)
         yield put({
             type: UNLIKE_POST_SUCCESS,
             data: res.data
@@ -75,7 +75,7 @@ function loadPostsAPI(lastId) {
 
 function* loadPosts(action) {
     try {
-        const res =  yield call(loadPostsAPI, action.lastId);
+        const res = yield call(loadPostsAPI, action.lastId);
         // yield  delay(1000);
         console.log(res)
 
@@ -93,6 +93,46 @@ function* loadPosts(action) {
     }
 }
 
+function loadUserPostsAPI(data, lastId) {
+    return axios.get(`/user/${data}/posts?lastId=${lastId || 0}`);
+}
+
+function* loadUserPosts(action) {
+    try {
+        const result = yield call(loadUserPostsAPI, action.data, action.lastId);
+        yield put({
+            type: LOAD_USER_POSTS_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: LOAD_USER_POSTS_FAILURE,
+            data: err.response.data,
+        });
+    }
+}
+
+function loadHashtagPostsAPI(data, lastId) {
+    return axios.get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`);
+}
+
+function* loadHashtagPosts(action) {
+    try {
+        const result = yield call(loadHashtagPostsAPI, action.data, action.lastId);
+        yield put({
+            type: LOAD_HASHTAG_POSTS_SUCCESS,
+            data: result.data,
+        });
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: LOAD_HASHTAG_POSTS_FAILURE,
+            data: err.response.data,
+        });
+    }
+}
+
 
 function loadPostAPI(data) {
     return axios.get(`/post/${data}`);
@@ -100,7 +140,7 @@ function loadPostAPI(data) {
 
 function* loadPost(action) {
     try {
-        const res =  yield call(loadPostAPI, action.data);
+        const res = yield call(loadPostAPI, action.data);
         yield put({
             type: LOAD_POST_SUCCESS,
             data: res.data
@@ -115,14 +155,13 @@ function* loadPost(action) {
 }
 
 
-
 function addPostAPI(data) {
-    return axios.post('/post' , data)
+    return axios.post('/post', data)
 }
 
 function* addPost(action) {
     try {
-        const res = yield call(addPostAPI , action.data)
+        const res = yield call(addPostAPI, action.data)
         // yield  delay(1000)
         // const id = shortId.generate()
         yield put({
@@ -134,8 +173,8 @@ function* addPost(action) {
             // }
         });
         yield put({
-            type : ADD_POST_TO_ME,
-            data : res.data.id
+            type: ADD_POST_TO_ME,
+            data: res.data.id
         })
     } catch (e) {
         console.log(e);
@@ -153,16 +192,16 @@ function removePostAPI(data) {
 
 function* removePost(action) {
     try {
-        const res = yield call(removePostAPI , action.data)
+        const res = yield call(removePostAPI, action.data)
         // yield  delay(1000)
         yield put({
             type: REMOVE_POST_SUCCESS,
-            data:res.data
+            data: res.data
 
         });
         yield put({
-            type : REMOVE_POST_OF_ME,
-            data : action.data
+            type: REMOVE_POST_OF_ME,
+            data: action.data
         })
     } catch (e) {
         console.log(e);
@@ -175,12 +214,12 @@ function* removePost(action) {
 
 
 function addCommentAPI(data) {
-    return axios.post(`/post/${data.postId}/comment` , data)  // POST /post/1/comment
+    return axios.post(`/post/${data.postId}/comment`, data)  // POST /post/1/comment
 }
 
 function* addComment(action) {
     try {
-        const res = yield call(addCommentAPI , action.data)
+        const res = yield call(addCommentAPI, action.data)
         // yield  delay(1000)
         yield put({
             type: ADD_COMMENT_SUCCESS,
@@ -198,12 +237,12 @@ function* addComment(action) {
 
 
 function uploadImagesAPI(data) {
-    return axios.post(`/post/images` , data)  // POST /post/1/comment
+    return axios.post(`/post/images`, data)  // POST /post/1/comment
 }
 
 function* uploadImages(action) {
     try {
-        const res = yield call(uploadImagesAPI , action.data)
+        const res = yield call(uploadImagesAPI, action.data)
         yield put({
             type: UPLOAD_IMAGES_SUCCESS,
             data: res.data
@@ -224,7 +263,7 @@ function retweetAPI(data) {
 
 function* retweet(action) {
     try {
-        const res = yield call(retweetAPI , action.data)
+        const res = yield call(retweetAPI, action.data)
         yield put({
             type: RETWEET_SUCCESS,
             data: res.data
@@ -239,13 +278,20 @@ function* retweet(action) {
 }
 
 
-
 function* watchLikePosts() {
     yield takeLatest(LIKE_POST_REQUEST, likePost)
 }
 
 function* watchUnlikePosts() {
     yield takeLatest(UNLIKE_POST_REQUEST, unlikePost)
+}
+
+function* watchLoadUserPosts() {
+    yield throttle(5000, LOAD_USER_POSTS_REQUEST, loadUserPosts)
+}
+
+function* watchLoadHashtagPosts() {
+    yield throttle(5000, LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts)
 }
 
 function* watchLoadPosts() {
@@ -280,12 +326,12 @@ function* watchRetweet() {
 }
 
 
-
-
 export default function* postSaga() {
     yield all([
         fork(watchLikePosts),
         fork(watchUnlikePosts),
+        fork(watchLoadUserPosts),
+        fork(watchLoadHashtagPosts),
         fork(watchLoadPosts),
         fork(watchLoadPost),
         fork(watchAddPost),
