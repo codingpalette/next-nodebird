@@ -66,14 +66,15 @@ function* unlikePost(action) {
 }
 
 
-function loadPostsAPI(data) {
-    return axios.get('/posts' , data)
+function loadPostsAPI(lastId) {
+    return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 
 function* loadPosts(action) {
     try {
-        const res = yield call(loadPostsAPI , action.data)
+        const res =  yield call(loadPostsAPI, action.lastId);
         // yield  delay(1000);
+        console.log(res)
 
         yield put({
             type: LOAD_POSTS_SUCCESS,
