@@ -38,6 +38,42 @@ router.get('/', async (req, res, next) => { // GET /user
     }
 });
 
+router.get('/followers', isLoggedIn, async (req, res, next) => { // GET /user/followers
+    try {
+        const user = await User.findOne({
+            where: {id: req.user.id}
+        });
+        if (!user) {
+            res.status(403).send('없는 사람을 팔로우하려고 하시네요?')
+        }
+        const followers = await user.getFollowers({
+            limit: parseInt(req.query.limit, 10),
+        });
+        res.status(200).json(followers);
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
+});
+
+router.get('/followings', isLoggedIn, async (req, res, next) => { // GET /user/followings
+    try {
+        const user = await User.findOne({
+            where: {id: req.user.id}
+        });
+        if (!user) {
+            res.status(403).send('없는 사람을 팔로우하려고 하시네요?')
+        }
+        const followings = await user.getFollowings({
+            limit: parseInt(req.query.limit, 10),
+        });
+        res.status(200).json(followings);
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
+});
+
 
 router.get('/:id', async (req, res, next) => { // GET /user/3
     try {
@@ -241,37 +277,7 @@ router.delete('/:userId/follow', isLoggedIn, async (req, res, next) => { // DELE
 });
 
 
-router.get('/followers', isLoggedIn, async (req, res, next) => { // GET /user/followers
-    try {
-        const user = await User.findOne({
-            where: {id: req.user.id}
-        });
-        if (!user) {
-            res.status(403).send('없는 사람을 팔로우하려고 하시네요?')
-        }
-        const followers = await user.getFollowers();
-        res.status(200).json(followers);
-    } catch (e) {
-        console.error(e);
-        next(e);
-    }
-});
 
-router.get('/followings', isLoggedIn, async (req, res, next) => { // GET /user/followings
-    try {
-        const user = await User.findOne({
-            where: {id: req.user.id}
-        });
-        if (!user) {
-            res.status(403).send('없는 사람을 팔로우하려고 하시네요?')
-        }
-        const followings = await user.getFollowings();
-        res.status(200).json(followings);
-    } catch (e) {
-        console.error(e);
-        next(e);
-    }
-});
 
 router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => { // DELETE /user/follower/2
     try {
