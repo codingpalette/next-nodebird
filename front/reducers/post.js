@@ -20,9 +20,12 @@ export const initialState = {
     addCommentLoading: false,
     addCommentDone: false,
     addCommentError: null,
-    loadPostsLoading: false,
+    loadPostsLoading: false,  // 포스트여러개 불러오기
     loadPostsDone: false,
     loadPostsError: null,
+    loadPostLoading: false, // 단일 포스트 불러오기
+    loadPostDone: false,
+    loadPostError: null,
     uploadImagesLoading: false,
     uploadImagesDone: false,
     uploadImagesError: null,
@@ -32,6 +35,7 @@ export const initialState = {
     mainPosts: [],
     imagePaths: [],
     hasMorePosts: true,
+    singlePost: null,
 };
 
 // export const generateDummyPost = (number) => Array(number).fill().map(() => ({
@@ -66,6 +70,10 @@ export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
 export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
+
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
@@ -153,6 +161,20 @@ const reducer = (state = initialState, action ) => {
             case LOAD_POSTS_FAILURE:
                 draft.loadPostsLoading = false;
                 draft.loadPostsError = action.error;
+                break;
+            case LOAD_POST_REQUEST:
+                draft.loadPostLoading = true;
+                draft.loadPostDone = false;
+                draft.loadPostError = null;
+                break;
+            case LOAD_POST_SUCCESS:
+                draft.loadPostLoading = false;
+                draft.loadPostDone = true;
+                draft.singlePost = action.data;
+                break;
+            case LOAD_POST_FAILURE:
+                draft.loadPostLoading = false;
+                draft.loadPostError = action.error;
                 break;
             case ADD_POST_REQUEST:
                 draft.addPostLoading = true;
