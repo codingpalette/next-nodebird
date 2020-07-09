@@ -3,6 +3,7 @@ import Slick from 'react-slick';
 import styled, {createGlobalStyle} from 'styled-components';
 import {CloseOutlined} from "@ant-design/icons";
 import {Overlay, Global, Header, SlickWrapper, CloseBtn, ImgWrapper, Indicator} from './styles'
+import {backUrl} from "../../config/config";
 
 
 const ImagesZoom = ({images, onClose}) => {
@@ -27,7 +28,7 @@ const ImagesZoom = ({images, onClose}) => {
                         >
                             {images.map((v) => (
                                 <ImgWrapper key={v.src}>
-                                    <img src={`http://localhost:5000/${v.src}` } alt={v.src}/>
+                                    <img src={`${backUrl}/${v.src}` } alt={v.src}/>
                                 </ImgWrapper>
                             ))}
                         </Slick>

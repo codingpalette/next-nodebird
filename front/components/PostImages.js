@@ -2,6 +2,7 @@ import React  , {useState , useCallback} from 'react';
 import styled from 'styled-components';
 import {PlusOutlined} from "@ant-design/icons";
 import ImagesZoom from "./ImagesZoom";
+import {backUrl} from "../config/config";
 
 const PhotoBox = styled.div`
   display: inline-block;
@@ -25,7 +26,7 @@ const PostImages = ({images}) => {
     if (images.length === 1) {
         return (
             <>
-                <img role="presentation" src={`http://localhost:5000/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
+                <img role="presentation" src={`${backUrl}/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
                 {showImagesZoom && <ImagesZoom images={images} onClose={onClose} />}
             </>
         )
@@ -33,8 +34,8 @@ const PostImages = ({images}) => {
     if (images.length === 2) {
         return (
             <>
-                <img role="presentation" style={{width:'50%' , display:'inline-block'}} src={`http://localhost:5000/${images[0].src}`} alt={`http://localhost:5000/${images[0].src}`} onClick={onZoom} />
-                <img role="presentation" style={{width:'50%', display:'inline-block'}} src={`http://localhost:5000/${images[1].src}`} alt={`http://localhost:5000/${images[1].src}`} onClick={onZoom} />
+                <img role="presentation" style={{width:'50%' , display:'inline-block'}} src={`${backUrl}/${images[0].src}`} alt={`${backUrl}/${images[0].src}`} onClick={onZoom} />
+                <img role="presentation" style={{width:'50%', display:'inline-block'}} src={`${backUrl}/${images[1].src}`} alt={`${backUrl}/${images[1].src}`} onClick={onZoom} />
                 {showImagesZoom && <ImagesZoom images={images} onClose={onClose} />}
             </>
         )
@@ -42,7 +43,7 @@ const PostImages = ({images}) => {
     return(
         <>
             <div>
-                <img role="presentation" style={{width:'50%'}} src={`http://localhost:5000/${images[0].src}`} alt={`http://localhost:5000/${images[0].src}`} onClick={onZoom} />
+                <img role="presentation" style={{width:'50%'}} src={`${backUrl}/${images[0].src}`} alt={`${backUrl}/${images[0].src}`} onClick={onZoom} />
                 <PhotoBox
                     role="presentation"
                     onClick={onZoom}
